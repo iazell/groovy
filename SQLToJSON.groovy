@@ -3,11 +3,13 @@
 
 import groovy.sql.Sql
 import java.sql.SQLRecoverableException
-
+import groovy.json.*
 Sql sql = null;
+def resultset
 try
 {
    sql = Sql.newInstance('jdbc:mysql://localhost:3306/groovytests', 'root', 'apollo', 'com.mysql.jdbc.Driver') 
+   resultset = sql.rows('select  * from monsters')
 }
 catch (SQLRecoverableException recoverableEx)
 {
@@ -17,14 +19,4 @@ catch (SQLRecoverableException recoverableEx)
    System.exit(-1)
 }
 
-def xml = new groovy.json.JsonBuilder()
-xml.Monsters
-{
-   sql.eachRow("select * from monsters") { row ->
-      Characters
-      {
-         name(row.name)
-         age(row.age)
-      }
-   }
-}
+println new JsonBuilder(resultset).toString()
